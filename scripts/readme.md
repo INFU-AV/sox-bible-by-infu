@@ -1,9 +1,16 @@
+# Scripts I made:
+*(all require sox unless mentioned otherwise)*
+### [wav2png.sh](https://github.com/INFU-AV/sox-bible-by-infu/blob/main/scripts/wav2png.sh) *(requires gnuplot)* Visual preview generator for short audio waveforms
+### [divider.sh](https://github.com/INFU-AV/sox-bible-by-infu/blob/main/scripts/divider.sh) Chops sample into equal parts
+### [samplerateshifter.sh](https://github.com/INFU-AV/sox-bible-by-infu/blob/main/scripts/samplerateshifter.sh) Best quality pitch/speed changer
+### [Wavetable.sh](https://github.com/INFU-AV/sox-bible-by-infu/blob/main/scripts/Wavetable.sh) Set of functions generating audio waveforms
+
 # sox in use:
 Here's plenty cool commands I've put together while making wavetables or whatnot:
 Some commands might've been made with less knowledge I got now, don't mind the mess!
 Cooler/noteworthy commands probably got assembled into their own scripts!
 
-## Get rid of spaces in filenames (saves you fighing whitespace demons!)
+## Get rid of spaces in filenames: *(saves you fighing whitespace demons!)*
 ```bash
 for f in *\ *; do mv "$f" "${f// /_}"; done
 ```
@@ -13,13 +20,13 @@ for f in *\ *; do mv "$f" "${f// /_}"; done
 for i in *.wav; do printf "$i\t"; soxi -r "$i" ; done | sort -k2nr > samplerates.txt
 ```
 
-## same but channels
+## same as above but channels:
 ```bash
 for i in *.wav; do printf "$i\t"; soxi -c "$i" ; done | sort -k2nr > channels.txt
 ```
 
-## Look for samples in current folder that are not 16bit
-```bash
+## Look for samples in current folder that are not 16bit:
+```php
 soxi -b * | grep -v 16
 ```
 
@@ -36,17 +43,17 @@ for i in *.*
   done
  ```
 
-## Same as above but keeps the channel count as original
+## Same as above but keeps the channel count as original:
 ```bash
 for i in *.*; do sox -V1 "$i" -b 16 -r 44100 "out1/$i" upsample rate -h 44100 norm ; done
 ```
 
-## Combine all wav files together && make total spectrogram
+## Combine all wav files together && make total spectrogram:
 ```bash
 sox $(command ls *.wav) total.wav && sox total.wav -n spectrogram -o total.png
 ```
 
-## sort by statistic 
+## sort by statistic:
 ```bash
 shopt -s nocaseglob
 ##sample rate:
@@ -78,29 +85,29 @@ done
     # convert every file here to mono 22kHz
 for i in *.*; do sox -V1 "$i" -c 1 -b 16 -r 22050 "out/$i" channels upsample rate -h 22050 norm ; done
 ```
-## monowave into separate waveforms
-```bash
+## monowave into separate waveforms:
+```php
 sox monowave.wav monowave%3n.wav trim 0 256s : newfile : restart
 ```
-## create inbetween wave across all files
+## create inbetween wave across all files:
 ```bash
 monoarray=( ) ; for a in ./*.wav ; do monoarray+=("$a") ; done # echo ${monoarray[0]} ; echo ${monoarray[255]}
 for (( Index = 0; Index < ${#monoarray[*]}; Index++ )); do
 sox --combine mix ${monoarray[$Index]} ${monoarray[$((Index +1))]} ${monoarray[$Index]%%.wav}half.wav
 done
 ```
-## combine waves in pairs,
+## combine waves in pairs:
 ```bash
 monoarray=( ) ; for a in ./*.wav ; do monoarray+=("$a") ; done # echo ${monoarray[0]} ; echo ${monoarray[255]}
 for (( Index = 0; Index < ${#monoarray[*]}; Index++ )); do
 sox --combine concatenate ${monoarray[$Index]} ${monoarray[$((Index +1))]} ${monoarray[$Index]%%.wav}double.wav
 done
 ```
-## Extend single cycle waveforms so you can properly listen to them
+## Extend single cycle waveforms so you can properly listen to them:
 ```bash
 for f in *.wav; do play ${f%%.*}.wav repeat 50; done
 ```
-## Same as above, but creates longer audio files
+## Same as above, but creates longer audio files:
 ```bash
 for f in *.wav; do sox ${f%%.*}.wav ${f%%.*}L.wav repeat 50; done
 sox monowave*L.wav MonoLong.wav
@@ -139,12 +146,25 @@ printf "\n"
 }
 done
 ```
-## One super rad effect/synth
-```bash
-    sox -n mega.wav synth 15 square 150.4 synth sine amod 150 synth saw mix 150 reverse synth triangle fmod 149.6 synth square fmod 75 norm phaser 1 1 0.8 0.99 0.1 -s overdrive 20 15 speed 0.5 echo 1 0.8 400 0.4 230 0.7 600 0.2 800 0.1 vol 0.8
+## One super rad effect/synth:
+```php
+sox -n mega.wav synth 15 square 150.4 synth sine amod 150 synth saw mix 150 reverse synth triangle fmod 149.6 synth square fmod 75 norm phaser 1 1 0.8 0.99 0.1 -s overdrive 20 15 speed 0.5 echo 1 0.8 400 0.4 230 0.7 600 0.2 800 0.1 vol 0.8
 ```
-
-## Slap some effects on audio
+```php
+# splitting that into multiple lines:
+sox -n mega.wav \
+synth 15 square 150.4 \
+synth sine amod 150 \
+synth saw mix 150 reverse \
+synth triangle fmod 149.6 \
+synth square fmod 75 norm \
+phaser 1 1 0.8 0.99 0.1 -s \
+overdrive 20 15 \
+speed 0.5 \
+echo 1 0.8 400 0.4 230 0.7 600 0.2 800 0.1 \
+vol 0.8
+```
+## Slap some effects on audio:
 ```bash
 PPP(){ # $1 as audio input
 local Setup="-b 16 -r 44100"
@@ -166,7 +186,7 @@ sox "$1" $Setup 8c.wav bass +2 overdrive 15 $extra $chor $Com
 } # PPP "$1"
 ```
 
-## play random sequence of files
+## play random sequence of files:
 ```bash
 i=0
 while [[ $i -lt "$2" ]]; do
@@ -176,7 +196,7 @@ done
 # $1 $2
 LENGTH=${#ARRAY[@]} RANDOM=${a[RANDOM%$LENGTH]}
 ```
-## sox live nokia keyboard, plus few synthesized sounds I made
+## sox live nokia keyboard, plus few synthesized sounds I made:
 ```bash
 soxkeys(){
 # https://gist.github.com/skratchdot/c912fe317192eb8b1c3c6d54d7ff71ae
@@ -342,7 +362,7 @@ gain -h overdrive +5 10 >&/dev/null
 done
 } ; soxkeys
 ```
-## sox parody quality script
+## sox parody quality script:
 ```bash
 #!/usr/bin/env bash
 
@@ -386,7 +406,7 @@ sox $(command ls ./File{1,2,3,4,5,6,7,8,9}.mp3) total.mp3 ; sox total.mp3 -n spe
 
 } ; main "$1"
 ```
-## Random synthesizing
+## Random synthesizing:
 ```bash
 # first attempts of wavetable making! ;3
 synthesize() {
@@ -470,7 +490,7 @@ and many others!
 
 -----------------
 
-```bash
+```php
 # BUGGY
 sox -n -b 4 -r 22050 lol.wav synth 1000s
 sox lol.wav new.wav trim 0 1s; soxi new.wav
