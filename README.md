@@ -1,9 +1,9 @@
 *maybe "sox-bible is bit of overstatement, but oh well..."*
 # SOX BIBLE by INFU
 Here you will find:
-- many links to various fantastic `sox` resources (each one was also archived by "archive.org" in case some links fail!)
-- Plenty commands or small scripts I assembled
-- Focus on Wavetable Synthesis!
+- many links to various [fantastic `sox` resources](#sox-links) *(each one was also archived by "archive.org" in case some links fail!)*
+- [Plenty commands or small scripts](https://github.com/INFU-AV/sox-bible-by-infu/tree/main/scripts) I assembled
+- Focus on [Wavetable Synthesis!](https://github.com/INFU-AV/sox-bible-by-infu/blob/main/scripts/Wavetable.sh)
 
 (It might not be comprehensive `sox` place-to-go, but surely you'll find it resourceful!)
 
